@@ -145,4 +145,87 @@ After:
 gcloud projects get-iam-policy PROJECT_ID
 gcloud iam roles describe ROLE_NAME
 gcloud iam service-accounts list
-gcloud logging read "protoPayload.methodName=SetIamPolicy"
+gcloud logging read "protoPayload.methodName=SetIamPolicy"## 🔎 IAM Threat Modeling
+
+### Identified Risk Categories
+
+1. Privilege Escalation  
+2. Lateral Movement  
+3. Service Account Impersonation  
+4. Excessive Project-Level Permissions  
+5. Policy Inheritance Misconfiguration  
+
+---
+
+### Example Privilege Escalation Scenario
+
+If a user has:
+- roles/iam.serviceAccountUser
+- roles/iam.roleAdmin
+##IAM Threat Modeling
+- Impersonate service accounts
+- Potentially gain Owner-level access indirectly
+
+Mitigation Implemented:
+- Separated IAM role management from service account usage
+- Restricted high-privilege roles to security administrators only
+- Monitored SetIamPolicy events via Cloud Logging
+## 🔐 IAM Conditions (Context-Aware Access)
+
+Implemented conditional access for sensitive roles:
+
+Example:
+- Developer role allowed only during business hours
+- Access restricted to specific IP range
+- Limited access to specific resource types
+
+Purpose:
+- Reduce risk of credential misuse
+- Limit exposure window
+- Enforce contextual Zero Trust controls
+## 📊 IAM Monitoring & Detection Strategy
+
+Configured logging to detect:
+
+- SetIamPolicy changes
+- Service account key creation
+- Role binding modifications
+- Privileged role assignments
+
+Sample Log Query:
+
+protoPayload.methodName="SetIamPolicy"
+
+Security Benefit:
+- Real-time detection of privilege changes
+- Faster incident response
+- Audit compliance tracking## 🧱 Blast Radius Reduction Strategy
+
+Original State:
+- Project-wide Editor roles
+- Broad inherited permissions
+
+Hardened State:
+- Resource-level IAM bindings
+- Custom roles with minimal permissions
+- Restricted service account scope
+
+Result:
+Reduced potential impact of compromised identity from project-wide to resource-specific.
+## 🎯 Enterprise IAM Design Principles Applied
+
+- Principle of Least Privilege
+- Separation of Duties
+- Identity Boundary Segmentation
+- Policy Inheritance Awareness
+- Continuous Monitoring
+- Guardrail Enforcement via Org Policies
+
+This lab simulates how IAM would be structured in a mid-size enterprise GCP environment.
+
+
+
+
+
+
+
